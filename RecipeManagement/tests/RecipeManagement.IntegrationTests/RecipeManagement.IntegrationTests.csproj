@@ -30,4 +30,8 @@
     <ProjectReference Include="..\RecipeManagement.SharedTestHelpers\RecipeManagement.SharedTestHelpers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="GroupOne" />
+  </ItemGroup>
+
 </Project>
