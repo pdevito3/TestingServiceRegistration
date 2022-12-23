@@ -1,0 +1,227 @@
+DomainName: forTesting
+BoundedContexts:
+- ProjectName: RecipeManagement
+  Port: 5375
+  DbContext:
+   ContextName: RecipesDbContext
+   DatabaseName: RecipeManagement
+   Provider: Postgres
+  Entities:
+  - Name: Recipe
+    Features:
+    - Type: GetList
+      IsProtected: true
+      PermissionName: CanReadRecipes
+    - Type: GetRecord
+      IsProtected: true
+      PermissionName: CanReadRecipes
+    - Type: AddRecord
+      IsProtected: true
+    - Type: UpdateRecord
+      IsProtected: true
+    - Type: DeleteRecord
+      IsProtected: true
+    Properties:
+    - Name: Title
+      Type: string
+      CanFilter: true
+      CanSort: true
+    - Name: Visibility
+      SmartNames:
+      - Public
+      - Friends Only
+      - Private
+      CanFilter: true
+      CanSort: true
+    - Name: Directions
+      Type: string
+      CanFilter: true
+      CanSort: true
+    - Name: Rating
+      Type: int?
+      CanFilter: true
+      CanSort: true
+    - Name: DateOfOrigin
+      Type: DateOnly?
+      CanFilter: true
+      CanSort: true
+    - Name: HaveMadeItMyself
+      Type: bool
+      CanFilter: true
+      CanSort: true
+    - Name: Author
+      Type: Author
+      ForeignEntityName: Author
+      ForeignEntityPlural: Authors
+    - Name: Ingredients
+      Type: ICollection<Ingredient>
+      ForeignEntityPlural: Ingredients
+  - Name: Author
+    Features:
+    - Type: GetList
+    - Type: GetRecord
+    - Type: AddRecord
+    - Type: UpdateRecord
+    - Type: DeleteRecord
+    Properties:
+    - Name: Name
+      Type: string
+      CanFilter: true
+      CanSort: true
+    - Name: RecipeId
+      Type: Guid
+      ForeignEntityName: Recipe
+      ForeignEntityPlural: Recipes
+  - Name: Ingredient
+    Features:
+    - Type: GetList
+    - Type: GetRecord
+    - Type: AddRecord
+    - Type: UpdateRecord
+    - Type: DeleteRecord
+    - Type: AddListByFk
+      BatchPropertyName: RecipeId
+      BatchPropertyType: Guid
+      ParentEntity: Recipe
+      ParentEntityPlural: Recipes
+    Properties:
+    - Name: Name
+      Type: string
+      CanFilter: true
+      CanSort: true
+    - Name: Quantity
+      Type: string
+      CanFilter: true
+      CanSort: true
+    - Name: ExpiresOn
+      Type: DateTime?
+      CanFilter: true
+      CanSort: true
+    - Name: Measure
+      Type: string
+      CanFilter: true
+      CanSort: true
+    - Name: RecipeId
+      Type: Guid
+      ForeignEntityName: Recipe
+  Environment:
+      AuthSettings:
+        Authority: http://localhost:3255/auth/realms/DevRealm
+        Audience: recipe_management
+        AuthorizationUrl: http://localhost:3255/auth/realms/DevRealm/protocol/openid-connect/auth
+        TokenUrl: http://localhost:3255/auth/realms/DevRealm/protocol/openid-connect/token
+        ClientId: recipe_management.swagger
+        ClientSecret: 974d6f71-d41b-4601-9a7a-a33081f80687
+      BrokerSettings:
+        Host: localhost
+        VirtualHost: /
+        Username: guest
+        Password: guest
+  Bus:
+    AddBus: true
+  Producers:
+  - EndpointRegistrationMethodName: AddRecipeProducerEndpoint
+    ProducerName: AddRecipeProducer
+    ExchangeName: recipe-added
+    MessageName: RecipeAdded
+    DomainDirectory: Recipes
+    ExchangeType: fanout
+    UsesDb: true
+  Consumers:
+  - EndpointRegistrationMethodName: AddToBookEndpoint
+    ConsumerName: AddToBook
+    ExchangeName: book-additions
+    QueueName: add-recipe-to-book
+    MessageName: RecipeAdded
+    DomainDirectory: Recipes
+    ExchangeType: fanout
+Messages:
+- Name: RecipeAdded
+  Properties:
+  - Name: RecipeId
+    Type: guid
+Bff:
+  ProjectName: RecipeManagementApp
+  ProxyPort: 4378
+  HeadTitle: Recipe Management App
+  Authority: http://localhost:3255/auth/realms/DevRealm
+  ClientId: recipe_management.bff
+  ClientSecret: 974d6f71-d41b-4601-9a7a-a33081f80688
+  RemoteEndpoints:
+    - LocalPath: /api/recipes
+      ApiAddress: https://localhost:5375/api/recipes
+    - LocalPath: /api/ingredients
+      ApiAddress: https://localhost:5375/api/ingredients
+  BoundaryScopes:
+    - recipe_management
+  Entities:
+  - Name: Recipe
+    Features:
+    - Type: GetList
+    - Type: GetRecord
+    - Type: AddRecord
+    - Type: UpdateRecord
+    - Type: DeleteRecord
+    Properties:
+    - Name: Title
+      Type: string #optional if string
+    - Name: Directions
+    - Name: RecipeSourceLink
+    - Name: Visibility
+    - Name: Description
+    - Name: Rating
+      Type: number?
+    - Name: DateOfOrigin
+      Type: Date
+    - Name: HaveMadeItMyself
+      Type: boolean
+  - Name: Ingredient
+    Features:
+    - Type: GetList
+    - Type: GetRecord
+    - Type: AddRecord
+    - Type: UpdateRecord
+    - Type: DeleteRecord
+    Properties:
+    - Name: Name
+    - Name: Quantity
+    - Name: Measure
+    - Name: RecipeId
+AuthServer:
+  Name: KeycloakPulumi
+  RealmName: DevRealm
+  Port: 3255
+  Clients:
+    - Id: recipe_management.postman.machine
+      Name: RecipeManagement Postman Machine
+      Secret: 974d6f71-d41b-4601-9a7a-a33081f84682
+      GrantType: ClientCredentials
+      BaseUrl: 'https://oauth.pstmn.io/'
+      Scopes:
+        - recipe_management #this should match the audience scope in your boundary auth settings and swagger specs
+    - Id: recipe_management.postman.code
+      Name: RecipeManagement Postman Code
+      Secret: 974d6f71-d41b-4601-9a7a-a33081f84680 #optional
+      GrantType: Code
+      BaseUrl: 'https://oauth.pstmn.io/'
+      Scopes:
+        - recipe_management #this should match the audience scope in your boundary auth settings and swagger specs
+    - Id: recipe_management.swagger
+      Name: RecipeManagement Swagger
+      Secret: 974d6f71-d41b-4601-9a7a-a33081f80687
+      GrantType: Code
+      BaseUrl: 'https://localhost:5375/'
+      Scopes:
+        - recipe_management #this should match the audience scope in your boundary auth settings and swagger specs
+    - Id: recipe_management.bff
+      Name: RecipeManagement BFF
+      Secret: 974d6f71-d41b-4601-9a7a-a33081f80688
+      BaseUrl: 'https://localhost:4378/'
+      GrantType: Code
+      RedirectUris:
+        - 'https://localhost:4378/*'
+      AllowedCorsOrigins:
+        - 'https://localhost:5375' # api 1 - recipe_management
+        - 'https://localhost:4378'
+      Scopes:
+        - recipe_management #this should match the audience scope in your boundary auth settings and swagger specs
