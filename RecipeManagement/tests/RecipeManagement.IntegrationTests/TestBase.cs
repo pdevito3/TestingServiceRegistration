@@ -5,24 +5,12 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using AutoBogus;
 using Databases;
-using Domain.Recipes.Features;
-using Extensions.Services;
-using FluentAssertions;
-using FluentAssertions.Extensions;
 using HeimGuard;
-using MassTransit;
-using MassTransit.Testing;
 using MediatR;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using Npgsql;
-using Resources;
-using Respawn;
-using Services;
 using SharedKernel.Exceptions;
 using static TestFixture;
 
@@ -30,36 +18,11 @@ using static TestFixture;
 public class TestBase
 {
     private static IServiceScopeFactory _scopeFactory;
-    private static ServiceProvider _provider;
-
-    public TestBase()
-    {
-        var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
-        {
-            EnvironmentName = Consts.Testing.IntegrationTestingEnvName,
-        });
-        builder.Configuration.AddEnvironmentVariables();
-
-        builder.ConfigureServices();
-        var services = builder.Services;
-
-        // add any mock services here
-        services.ReplaceServiceWithSingletonMock<IHttpContextAccessor>();
-        services.ReplaceServiceWithSingletonMock<IHeimGuardClient>();
-
-        _provider = services.BuildServiceProvider();
-        SetupDateAssertions();
-    }
     
     [SetUp]
     public Task TestSetUp()
     {
-        // var userPolicyHandler = GetService<IHeimGuardClient>();
-        // Mock.Get(userPolicyHandler)
-        //     .Setup(x => x.HasPermissionAsync(It.IsAny<string>()))
-        //     .ReturnsAsync(true);
-
-        _scopeFactory = _provider.GetService<IServiceScopeFactory>();
+        _scopeFactory = BaseScopeFactory;
         
         AutoFaker.Configure(builder =>
         {
@@ -262,22 +225,6 @@ public class TestBase
         Mock.Get(userPolicyHandler)
             .Setup(x => x.MustHavePermission<ForbiddenAccessException>(permission))
             .ThrowsAsync(new ForbiddenAccessException());
-    }
-
-    private static void SetupDateAssertions()
-    {
-        // close to equivalency required to reconcile precision differences between EF and Postgres
-        AssertionOptions.AssertEquivalencyUsing(options =>
-        {
-            options.Using<DateTime>(ctx => ctx.Subject
-                .Should()
-                .BeCloseTo(ctx.Expectation, 1.Seconds())).WhenTypeIs<DateTime>();
-            options.Using<DateTimeOffset>(ctx => ctx.Subject
-                .Should()
-                .BeCloseTo(ctx.Expectation, 1.Seconds())).WhenTypeIs<DateTimeOffset>();
-
-            return options;
-        });
     }
 }
 
