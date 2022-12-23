@@ -9,6 +9,9 @@ using FluentAssertions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Domain;
+using HeimGuard;
+using Moq;
 using static TestFixture;
 using RecipeManagement.SharedTestHelpers.Fakes.Author;
 
@@ -38,5 +41,20 @@ public class UpdateRecipeCommandTests : TestBase
         updatedRecipe.Rating.Should().Be(updatedRecipeDto.Rating);
         updatedRecipe.DateOfOrigin.Should().Be(updatedRecipeDto.DateOfOrigin);
         updatedRecipe.HaveMadeItMyself.Should().Be(updatedRecipeDto.HaveMadeItMyself);
+    }
+    
+    [Test]
+    [NonParallelizable]
+    public async Task must_be_permitted()
+    {
+        // Arrange
+        SetUserNotPermitted(Permissions.CanUpdateRecipes);
+
+        // Act
+        var command = new UpdateRecipe.Command(Guid.NewGuid(), new RecipeForUpdateDto());
+        var act = () => SendAsync(command);
+
+        // Assert
+        await act.Should().ThrowAsync<ForbiddenAccessException>();
     }
 }

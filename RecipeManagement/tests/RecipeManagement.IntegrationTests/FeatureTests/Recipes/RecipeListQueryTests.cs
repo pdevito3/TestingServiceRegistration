@@ -7,6 +7,9 @@ using RecipeManagement.Domain.Recipes.Features;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Domain;
+using HeimGuard;
+using Moq;
 using static TestFixture;
 using RecipeManagement.SharedTestHelpers.Fakes.Author;
 
@@ -29,5 +32,21 @@ public class RecipeListQueryTests : TestBase
 
         // Assert
         recipes.Count.Should().BeGreaterThanOrEqualTo(2);
+    }
+    
+    [Test]
+    [NonParallelizable]
+    public async Task must_be_permitted()
+    {
+        // Arrange
+        SetUserNotPermitted(Permissions.CanReadRecipes);
+        var queryParameters = new RecipeParametersDto();
+            
+        // Act
+        var query = new GetRecipeList.Query(queryParameters);
+        var act = () => SendAsync(query);
+
+        // Assert
+        await act.Should().ThrowAsync<ForbiddenAccessException>();
     }
 }

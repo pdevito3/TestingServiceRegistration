@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using SharedKernel.Exceptions;
 using System.Threading.Tasks;
+using Domain;
+using Domain.Recipes.Dtos;
+using HeimGuard;
+using Moq;
 using static TestFixture;
 using RecipeManagement.SharedTestHelpers.Fakes.Author;
 
@@ -45,5 +49,19 @@ public class RecipeQueryTests : TestBase
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>();
+    }
+    
+    [Test]
+    [NonParallelizable]
+    public async Task must_be_permitted()
+    {
+        // Arrange
+        SetUserNotPermitted(Permissions.CanReadRecipes);
+        
+        var query = new GetRecipe.Query(Guid.NewGuid());
+        Func<Task> act = () => SendAsync(query);
+
+        // Assert
+        await act.Should().ThrowAsync<ForbiddenAccessException>();
     }
 }

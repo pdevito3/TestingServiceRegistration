@@ -6,6 +6,9 @@ using FluentAssertions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Domain;
+using HeimGuard;
+using Moq;
 using RecipeManagement.Domain.Recipes.Features;
 using static TestFixture;
 using SharedKernel.Exceptions;
@@ -13,6 +16,26 @@ using RecipeManagement.SharedTestHelpers.Fakes.Author;
 
 public class AddRecipeCommandTests : TestBase
 {
+    [Test]
+    [NonParallelizable]
+    public async Task must_be_permitted()
+    {
+        var userPolicyHandler = GetService<IHeimGuardClient>();
+        Mock.Get(userPolicyHandler)
+            .Setup(x => x.MustHavePermission<ForbiddenAccessException>(Permissions.CanAddRecipes))
+            .ThrowsAsync(new ForbiddenAccessException());
+        
+        // Arrange
+        var fakeRecipeOne = new FakeRecipeForCreationDto().Generate();
+
+        // Act
+        var command = new AddRecipe.Command(fakeRecipeOne);
+        var act = () => SendAsync(command);
+
+        // Assert
+        await act.Should().ThrowAsync<ForbiddenAccessException>();
+    }
+    
     [Test]
     public async Task can_add_new_recipe_to_db()
     {

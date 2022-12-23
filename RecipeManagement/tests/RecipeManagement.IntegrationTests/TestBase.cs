@@ -23,6 +23,7 @@ using Npgsql;
 using Resources;
 using Respawn;
 using Services;
+using SharedKernel.Exceptions;
 using static TestFixture;
 
 [Parallelizable]
@@ -30,10 +31,9 @@ public class TestBase
 {
     private static IServiceScopeFactory _scopeFactory;
     private static ServiceProvider _provider;
-    private static InMemoryTestHarness _harness;
     
     [SetUp]
-    public async Task TestSetUp()
+    public Task TestSetUp()
     {
         // var userPolicyHandler = GetService<IHeimGuardClient>();
         // Mock.Get(userPolicyHandler)
@@ -53,23 +53,8 @@ public class TestBase
         services.ReplaceServiceWithSingletonMock<IHttpContextAccessor>();
         services.ReplaceServiceWithSingletonMock<IHeimGuardClient>();
 
-        // MassTransit Harness Setup -- Do Not Delete Comment
-        services.AddMassTransitInMemoryTestHarness(cfg =>
-        {
-            cfg.AddMassTransitTestHarness(harness => 
-            {
-                // Consumer Registration -- Do Not Delete Comment
-
-                harness.AddConsumer<AddToBook>();
-            });
-        });
-
         _provider = services.BuildServiceProvider();
         _scopeFactory = _provider.GetService<IServiceScopeFactory>();
-
-        // MassTransit Start Setup -- Do Not Delete Comment
-        // _harness = _provider.GetRequiredService<InMemoryTestHarness>();
-        // await _harness.Start();
 
         SetupDateAssertions();
         
@@ -81,6 +66,7 @@ public class TestBase
                 .WithTreeDepth(1)
                 .WithRepeatCount(1);
         });
+        return Task.CompletedTask;
     }
 
     public static TScopedService GetService<TScopedService>()
@@ -267,52 +253,12 @@ public class TestBase
         });
     }
 
-    // MassTransit Methods -- Do Not Delete Comment
-    /// <summary>
-    /// Publishes a message to the bus, and waits for the specified response.
-    /// </summary>
-    /// <param name="message">The message that should be published.</param>
-    /// <typeparam name="TMessage">The message that should be published.</typeparam>
-    public static async Task PublishMessage<TMessage>(object message)
-        where TMessage : class
+    public void SetUserNotPermitted(string permission)
     {
-        await _harness.Bus.Publish<TMessage>(message);
-    }
-    
-    /// <summary>
-    /// Confirm that a message has been published for this harness.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be published.</typeparam>
-    /// <returns>A boolean of true if a message of the given type has been published.</returns>
-    public static async Task<bool> IsPublished<TMessage>()
-        where TMessage : class
-    {
-        return await _harness.Published.Any<TMessage>();
-    }
-    
-    /// <summary>
-    /// Confirm that a message has been consumed for this harness.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be consumed.</typeparam>
-    /// <returns>A boolean of true if a message of the given type has been consumed.</returns>
-    public static async Task<bool> IsConsumed<TMessage>()
-        where TMessage : class
-    {
-        return await _harness.Consumed.Any<TMessage>();
-    }
-    
-    /// <summary>
-    /// The desired consumer consumed the message.
-    /// </summary>
-    /// <typeparam name="TMessage">The message that should be consumed.</typeparam>
-    /// <typeparam name="TConsumedBy">The consumer of the message.</typeparam>
-    /// <returns>A boolean of true if a message of the given type has been consumed by the given consumer.</returns>
-    public static async Task<bool> IsConsumed<TMessage, TConsumedBy>()
-        where TMessage : class
-        where TConsumedBy : class, IConsumer
-    {
-        var consumerHarness = _provider.GetRequiredService<IConsumerTestHarness<TConsumedBy>>();
-        return await consumerHarness.Consumed.Any<TMessage>();
+        var userPolicyHandler = GetService<IHeimGuardClient>();
+        Mock.Get(userPolicyHandler)
+            .Setup(x => x.MustHavePermission<ForbiddenAccessException>(permission))
+            .ThrowsAsync(new ForbiddenAccessException());
     }
 
     private static void SetupDateAssertions()

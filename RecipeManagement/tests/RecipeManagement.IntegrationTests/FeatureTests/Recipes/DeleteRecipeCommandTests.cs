@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using SharedKernel.Exceptions;
 using System.Threading.Tasks;
+using Domain;
+using HeimGuard;
+using Moq;
 using static TestFixture;
 using RecipeManagement.SharedTestHelpers.Fakes.Author;
 
@@ -62,5 +65,20 @@ public class DeleteRecipeCommandTests : TestBase
 
         // Assert
         deletedRecipe?.IsDeleted.Should().BeTrue();
+    }
+    
+    [Test]
+    [NonParallelizable]
+    public async Task must_be_permitted()
+    {
+        // Arrange
+        SetUserNotPermitted(Permissions.CanDeleteRecipes);
+
+        // Act
+        var command = new DeleteRecipe.Command(Guid.NewGuid());
+        var act = () => SendAsync(command);
+
+        // Assert
+        await act.Should().ThrowAsync<ForbiddenAccessException>();
     }
 }
