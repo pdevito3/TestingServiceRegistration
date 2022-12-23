@@ -48,6 +48,7 @@ public class TestBase
         services.ReplaceServiceWithSingletonMock<IHeimGuardClient>();
 
         _provider = services.BuildServiceProvider();
+        SetupDateAssertions();
     }
     
     [SetUp]
@@ -59,8 +60,6 @@ public class TestBase
         //     .ReturnsAsync(true);
 
         _scopeFactory = _provider.GetService<IServiceScopeFactory>();
-
-        SetupDateAssertions();
         
         AutoFaker.Configure(builder =>
         {
