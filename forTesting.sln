@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "SharedKernel\SharedKernel.csproj", "{B048715A-7590-4717-A62B-6C2163A83D30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RecipeManagement", "RecipeManagement", "{B4791B7F-ABF5-47A0-AB2E-FB55A9AB818F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1966A49B-2B88-4BF6-8C8E-E0C113269723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagement", "RecipeManagement\src\RecipeManagement\RecipeManagement.csproj", "{C313401C-F552-4DE3-94D4-7465A276BD2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3F0AE689-250A-4519-AEBF-91B3F46A29F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagement.IntegrationTests", "RecipeManagement\tests\RecipeManagement.IntegrationTests\RecipeManagement.IntegrationTests.csproj", "{E87EBF55-C18B-486C-98EE-195DDE1D613B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagement.FunctionalTests", "RecipeManagement\tests\RecipeManagement.FunctionalTests\RecipeManagement.FunctionalTests.csproj", "{77FDEAD2-9D55-43AE-80E3-3C2F0FE6C720}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagement.SharedTestHelpers", "RecipeManagement\tests\RecipeManagement.SharedTestHelpers\RecipeManagement.SharedTestHelpers.csproj", "{A4D59D29-1816-4F7E-B7D6-AFB8CDA6D944}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagement.UnitTests", "RecipeManagement\tests\RecipeManagement.UnitTests\RecipeManagement.UnitTests.csproj", "{D35BC0FD-5FB0-4238-A04A-EF016E43E528}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeycloakPulumi", "KeycloakPulumi\KeycloakPulumi.csproj", "{35B205A6-79BC-4DE8-A72C-B72CF5DE7685}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeManagementApp", "RecipeManagementApp\RecipeManagementApp.csproj", "{20F2785C-B3FB-4BAF-9C6F-8718778041E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B048715A-7590-4717-A62B-6C2163A83D30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B048715A-7590-4717-A62B-6C2163A83D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B048715A-7590-4717-A62B-6C2163A83D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B048715A-7590-4717-A62B-6C2163A83D30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C313401C-F552-4DE3-94D4-7465A276BD2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C313401C-F552-4DE3-94D4-7465A276BD2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C313401C-F552-4DE3-94D4-7465A276BD2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C313401C-F552-4DE3-94D4-7465A276BD2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E87EBF55-C18B-486C-98EE-195DDE1D613B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E87EBF55-C18B-486C-98EE-195DDE1D613B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E87EBF55-C18B-486C-98EE-195DDE1D613B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E87EBF55-C18B-486C-98EE-195DDE1D613B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77FDEAD2-9D55-43AE-80E3-3C2F0FE6C720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77FDEAD2-9D55-43AE-80E3-3C2F0FE6C720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77FDEAD2-9D55-43AE-80E3-3C2F0FE6C720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77FDEAD2-9D55-43AE-80E3-3C2F0FE6C720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4D59D29-1816-4F7E-B7D6-AFB8CDA6D944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4D59D29-1816-4F7E-B7D6-AFB8CDA6D944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4D59D29-1816-4F7E-B7D6-AFB8CDA6D944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4D59D29-1816-4F7E-B7D6-AFB8CDA6D944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35BC0FD-5FB0-4238-A04A-EF016E43E528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35BC0FD-5FB0-4238-A04A-EF016E43E528}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35BC0FD-5FB0-4238-A04A-EF016E43E528}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35BC0FD-5FB0-4238-A04A-EF016E43E528}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35B205A6-79BC-4DE8-A72C-B72CF5DE7685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B205A6-79BC-4DE8-A72C-B72CF5DE7685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35B205A6-79BC-4DE8-A72C-B72CF5DE7685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35B205A6-79BC-4DE8-A72C-B72CF5DE7685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20F2785C-B3FB-4BAF-9C6F-8718778041E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20F2785C-B3FB-4BAF-9C6F-8718778041E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20F2785C-B3FB-4BAF-9C6F-8718778041E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20F2785C-B3FB-4BAF-9C6F-8718778041E7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1966A49B-2B88-4BF6-8C8E-E0C113269723} = {B4791B7F-ABF5-47A0-AB2E-FB55A9AB818F}
+		{C313401C-F552-4DE3-94D4-7465A276BD2F} = {1966A49B-2B88-4BF6-8C8E-E0C113269723}
+		{3F0AE689-250A-4519-AEBF-91B3F46A29F6} = {B4791B7F-ABF5-47A0-AB2E-FB55A9AB818F}
+		{E87EBF55-C18B-486C-98EE-195DDE1D613B} = {3F0AE689-250A-4519-AEBF-91B3F46A29F6}
+		{77FDEAD2-9D55-43AE-80E3-3C2F0FE6C720} = {3F0AE689-250A-4519-AEBF-91B3F46A29F6}
+		{A4D59D29-1816-4F7E-B7D6-AFB8CDA6D944} = {3F0AE689-250A-4519-AEBF-91B3F46A29F6}
+		{D35BC0FD-5FB0-4238-A04A-EF016E43E528} = {3F0AE689-250A-4519-AEBF-91B3F46A29F6}
+	EndGlobalSection
+EndGlobal
