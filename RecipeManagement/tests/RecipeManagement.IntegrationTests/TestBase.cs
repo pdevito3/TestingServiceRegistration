@@ -31,15 +31,9 @@ public class TestBase
 {
     private static IServiceScopeFactory _scopeFactory;
     private static ServiceProvider _provider;
-    
-    [SetUp]
-    public Task TestSetUp()
-    {
-        // var userPolicyHandler = GetService<IHeimGuardClient>();
-        // Mock.Get(userPolicyHandler)
-        //     .Setup(x => x.HasPermissionAsync(It.IsAny<string>()))
-        //     .ReturnsAsync(true);
 
+    public TestBase()
+    {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
         {
             EnvironmentName = Consts.Testing.IntegrationTestingEnvName,
@@ -54,6 +48,16 @@ public class TestBase
         services.ReplaceServiceWithSingletonMock<IHeimGuardClient>();
 
         _provider = services.BuildServiceProvider();
+    }
+    
+    [SetUp]
+    public Task TestSetUp()
+    {
+        // var userPolicyHandler = GetService<IHeimGuardClient>();
+        // Mock.Get(userPolicyHandler)
+        //     .Setup(x => x.HasPermissionAsync(It.IsAny<string>()))
+        //     .ReturnsAsync(true);
+
         _scopeFactory = _provider.GetService<IServiceScopeFactory>();
 
         SetupDateAssertions();
